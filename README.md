@@ -1,4 +1,4 @@
-# 🔨 Signal.repair
+# ⚡ Signal.repair
 
 > **Cut through the noise. Find what's real.**
 
