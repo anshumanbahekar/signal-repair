@@ -1,0 +1,7 @@
+[app]
+name = "signal-repair-pipeline"
+script = "./signal_pipeline.py"
+source = [
+  "./signal_pipeline.py",
+  "./requirements.txt",
+]
