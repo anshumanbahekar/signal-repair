@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 
-const API = 'http://localhost:8080';
+const API = 'https://signal-repair-production.up.railway.app';
 type Theme = 'dark' | 'light';
 
 interface ClaimResult {

@@ -1,4 +1,4 @@
-const API = 'http://localhost:8080';
+const API = 'https://signal-repair-production.up.railway.app';
 
 const VERDICT_COLORS = {
   TRUE:        { color: '#16a34a', bg: '#dcfce722', border: '#16a34a44' },
