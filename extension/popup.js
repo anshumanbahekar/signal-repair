@@ -1,4 +1,4 @@
-const API = 'https://signal-repair-production.up.railway.app';
+const API = 'https://signal-repair.onrender.com';
 
 const VERDICT_COLORS = {
   TRUE:        { color: '#16a34a', bg: '#dcfce722', border: '#16a34a44' },

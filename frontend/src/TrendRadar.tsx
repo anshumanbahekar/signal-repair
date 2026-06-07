@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 
-const API = 'https://signal-repair-production.up.railway.app';
+const API = 'https://signal-repair.onrender.com';
 type Theme = 'dark' | 'light';
 
 interface TopicResult {

@@ -5,7 +5,7 @@ import ThemeToggle from './ThemeToggle';
 import HallucinationExamples from './HallucinationExamples';
 import SourceGraph from './SourceGraph';
 
-const API = 'https://signal-repair-production.up.railway.app';
+const API = 'https://signal-repair.onrender.com';
 
 type Verdict = 'TRUE' | 'MOSTLY_TRUE' | 'DISPUTED' | 'OUTDATED' | 'FALSE' | 'NOISE';
 type Theme = 'dark' | 'light';
