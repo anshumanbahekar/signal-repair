@@ -243,6 +243,7 @@ export default function App({ onBack, theme: themeProp, toggleTheme: toggleTheme
   const [contradictions, setContradictions] = useState<Contradiction[]>([]);
   const [result, setResult] = useState<RepairResult | null>(null);
   const [error, setError] = useState('');
+  const [wakingUp, setWakingUp] = useState(false);
   const [traceOpen, setTraceOpen] = useState(false);
 
   const handleExampleSelect = (text: string) => {
@@ -263,7 +264,10 @@ export default function App({ onBack, theme: themeProp, toggleTheme: toggleTheme
   const handleRepair = async () => {
     if (!input.trim() || streaming) return;
     setStreaming(true); setResult(null); setSources([]); setContradictions([]);
-    setTraces([]); setAgents({}); setError('');
+    setTraces([]); setAgents({}); setError(''); setWakingUp(false);
+    
+    // Show waking up message if backend takes > 4 seconds
+    const wakeTimer = setTimeout(() => setWakingUp(true), 4000);
     try {
       const response = await fetch(`${API}/repair/stream`, {
         method: 'POST',
@@ -294,7 +298,7 @@ export default function App({ onBack, theme: themeProp, toggleTheme: toggleTheme
       }
     } catch (e: any) {
       setError(e.message || 'Cannot connect to backend on port 8080.');
-    } finally { setStreaming(false); }
+    } finally { clearTimeout(wakeTimer); setWakingUp(false); setStreaming(false); }
   };
 
   return (
@@ -390,6 +394,20 @@ export default function App({ onBack, theme: themeProp, toggleTheme: toggleTheme
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             style={{ background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: 12, padding: 14, marginBottom: 16, color: '#dc2626', fontSize: 13 }}>
              {error}
+          </motion.div>
+        )}
+
+        {wakingUp && !result && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            style={{ background: isDark ? '#0d1e35' : '#eff6ff', border: `1px solid ${isDark ? '#1e3a5f' : '#bfdbfe'}`,
+              borderRadius: 12, padding: '12px 16px', marginBottom: 12,
+              display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: accent }}>
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+            </motion.div>
+            Waking up backend — first request may take up to 30 seconds...
           </motion.div>
         )}
 
