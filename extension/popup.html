@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Signal.repair</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 380px;
+    min-height: 200px;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    background: #060c1a;
+    color: #e2e8f0;
+  }
+
+  .header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0d1526;
+  }
+
+  .logo {
+    width: 28px; height: 28px;
+    background: #0f172a;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo svg { display: block; }
+
+  .brand {
+    font-size: 15px;
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+
+  .brand span { color: #3b82f6; font-style: normal; }
+
+  .body { padding: 16px; }
+
+  .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+
+  textarea {
+    flex: 1;
+    background: #0a0f1e;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #e2e8f0;
+    font-size: 12px;
+    line-height: 1.5;
+    resize: none;
+    font-family: inherit;
+    height: 70px;
+    outline: none;
+  }
+
+  textarea:focus { border-color: #3b82f6; }
+
+  .btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6, #10b981);
+    color: #fff;
+    white-space: nowrap;
+    align-self: flex-end;
+    box-shadow: 0 2px 12px rgba(59,130,246,0.3);
+    transition: opacity 0.2s;
+  }
+
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .loading {
+    text-align: center;
+    padding: 20px;
+    color: #475569;
+    font-size: 12px;
+  }
+
+  .dots { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #3b82f6;
+    animation: pulse 0.8s ease-in-out infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1); } }
+
+  .result { display: flex; flex-direction: column; gap: 10px; }
+
+  .verdict-card {
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+
+  .verdict-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .score {
+    font-size: 32px;
+    font-weight: 900;
+    font-family: 'Courier New', monospace;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .score-label {
+    font-size: 9px;
+    opacity: 0.6;
+    letter-spacing: 0.1em;
+  }
+
+  .ekg {
+    width: 100%;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #0a0f1e;
+    border: 1px solid #1e293b;
+  }
+
+  .summary-card {
+    background: #0d1526;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .summary-label {
+    font-size: 9px;
+    color: #475569;
+    letter-spacing: 0.12em;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 6px;
+  }
+
+  .summary-text {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+
+  .repair-card {
+    background: #0d1e35;
+    border: 1px solid #1e3a5f44;
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .repair-label {
+    font-size: 9px;
+    color: #3b82f6;
+    letter-spacing: 0.12em;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 6px;
+  }
+
+  .repair-text {
+    font-size: 12px;
+    color: #e2e8f0;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  .open-btn {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #1e293b;
+    background: transparent;
+    color: #475569;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .open-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+
+  .error {
+    background: #fee2e222;
+    border: 1px solid #fca5a544;
+    border-radius: 8px;
+    padding: 12px;
+    color: #dc2626;
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg width="18" height="18" viewBox="0 0 56 56">
+      <rect width="56" height="56" rx="14" fill="#0f172a"/>
+      <polyline points="8,28 16,28 20,14 24,40 28,22 32,34 36,28 48,28" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="48" cy="28" r="4" fill="#10b981"/>
+    </svg>
+  </div>
+  <div class="brand">signal<span>.</span>repair</div>
+</div>
+
+<div class="body">
+  <div class="input-group">
+    <textarea id="claimInput" placeholder="Select text on any page, or type a claim here..."></textarea>
+    <button class="btn" id="repairBtn">Repair</button>
+  </div>
+
+  <div id="loading" class="loading" style="display:none">
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div id="loadingText">Searching live web...</div>
+  </div>
+
+  <div id="result" class="result" style="display:none"></div>
+  <div id="error" class="error" style="display:none"></div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

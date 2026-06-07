@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Signal.repair",
+  "version": "1.0.0",
+  "description": "Repair broken information signals. Select any text and verify it instantly.",
+  "permissions": ["contextMenus", "activeTab", "storage"],
+  "host_permissions": ["http://localhost:8080/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Signal.repair"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {}
+}
