@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+httpx
+anthropic
+python-dotenv
+pydantic
+aiohttp
+groq
+tavily-python
+newspaper4k
+trafilatura
