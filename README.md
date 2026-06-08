@@ -8,6 +8,15 @@ Built for **DeveloperWeek New York 2026 Hackathon**
 
 ---
 
+## 🌐 Live Demo
+
+- **App:** https://signal-repair.vercel.app
+- **API:** https://signal-repair.onrender.com/docs
+- **GitHub:** https://github.com/anshumanbahekar/signal-repair
+- **Demo Video:** https://www.youtube.com/watch?v=RFKflqrorMA
+
+---
+
 ## 🌐 What it does
 
 Paste any claim, URL, or AI-generated text. Three specialized agents work in parallel to find the truth:
