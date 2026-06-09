@@ -1,4 +1,5 @@
 import os
+import httpx
 from typing import List
 from models import Source
 
@@ -19,36 +20,71 @@ async def scout(query: str, mode: str = "claim") -> tuple[List[Source], List[str
 
     sources = []
 
-    try:
-        trace.append("📡 Scout searching live web via Tavily...")
-        client = get_tavily_client()
+    # Try Nimble first
+    nimble_key = os.getenv("NIMBLE_API_KEY", "")
+    if nimble_key:
+        try:
+            trace.append("📡 Scout searching via Nimble Web Intelligence...")
+            async with httpx.AsyncClient(timeout=20) as client:
+                response = await client.post(
+                    "https://api.webit.live/api/v1/realtime/serp",
+                    headers={
+                        "Authorization": f"Basic {nimble_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "query": search_query,
+                        "search_engine": "google_search",
+                        "country": "US",
+                        "locale": "en",
+                        "num_results": 8
+                    }
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    results = data.get("parsing", {}).get("entities", {}).get("OrganicResult", [])
+                    for r in results[:8]:
+                        url = r.get("url", "")
+                        sources.append(Source(
+                            url=url,
+                            title=r.get("title", "Unknown"),
+                            snippet=r.get("description", "")[:300],
+                            credibility_score=_score_credibility(url),
+                            stance="neutral",
+                            published_date=r.get("date", None)
+                        ))
+                    trace.append(f"✅ Nimble retrieved {len(sources)} live results")
+        except Exception as e:
+            trace.append(f"⚠️ Nimble error: {str(e)} — falling back to Tavily")
 
-        response = client.search(
-            query=search_query,
-            search_depth="advanced",
-            max_results=8,
-            include_answer=False,
-            include_raw_content=False,
-        )
+    # Fallback to Tavily
+    if not sources:
+        try:
+            trace.append("📡 Scout searching via Tavily...")
+            client = get_tavily_client()
+            response = client.search(
+                query=search_query,
+                search_depth="advanced",
+                max_results=8,
+                include_answer=False,
+                include_raw_content=False,
+            )
+            results = response.get("results", [])
+            trace.append(f"✅ Tavily retrieved {len(results)} live results")
+            for r in results:
+                url = r.get("url", "")
+                sources.append(Source(
+                    url=url,
+                    title=r.get("title", "Unknown Source"),
+                    snippet=r.get("content", "")[:300],
+                    credibility_score=_score_credibility(url),
+                    stance="neutral",
+                    published_date=r.get("published_date", None)
+                ))
+        except Exception as e:
+            trace.append(f"⚠️ Tavily error: {str(e)}")
 
-        results = response.get("results", [])
-        trace.append(f"✅ Scout retrieved {len(results)} live results")
-
-        for r in results:
-            url = r.get("url", "")
-            sources.append(Source(
-                url=url,
-                title=r.get("title", "Unknown Source"),
-                snippet=r.get("content", "")[:300],
-                credibility_score=_score_credibility(url),
-                stance="neutral",
-                published_date=r.get("published_date", None)
-            ))
-
-        trace.append(f"📊 Scout scored credibility for {len(sources)} sources")
-
-    except Exception as e:
-        trace.append(f"⚠️ Scout error: {str(e)}")
+    trace.append(f"📊 Scout scored credibility for {len(sources)} sources")
 
     if not sources:
         trace.append("ℹ️ No live sources found — Synthesis will use internal knowledge")
