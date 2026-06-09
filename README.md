@@ -6,8 +6,6 @@ AI-powered multi-agent signal intelligence platform that verifies any claim, top
 
 Built for **DeveloperWeek New York 2026 Hackathon**
 
----
-
 ## 🌐 Live Demo
 
 - **App:** https://signal-repair.vercel.app
@@ -15,15 +13,7 @@ Built for **DeveloperWeek New York 2026 Hackathon**
 - **GitHub:** https://github.com/anshumanbahekar/signal-repair
 - **Demo Video:** https://www.youtube.com/watch?v=RFKflqrorMA
 
----
-
-## 🌐 What it does
-
-Paste any claim, URL, or AI-generated text. Three specialized agents work in parallel to find the truth:
-
-1. **Scout Agent** — searches 50+ live sources via Tavily's real-time web intelligence
-2. **Critic Agent** — scores credibility, assigns stances, finds contradictions between sources
-3. **Consensus Engine** — runs 3 LLMs in parallel (Llama 3.3 70B, Llama 3.1 8B, Gemma 2 9B). Majority wins. All agree = UNANIMOUS. All disagree = DISPUTED.
+> Note: Backend hosted on Render free tier — may take 30 seconds to wake up on first request.
 
 ---
 
@@ -39,6 +29,7 @@ Paste any claim, URL, or AI-generated text. Three specialized agents work in par
 | **Signal History** | All repairs stored in Tower lakehouse with analytics |
 | **Live Streaming** | Watch agents work in real time via Server-Sent Events |
 | **Source Graph** | Animated force graph showing source credibility network |
+| **Browser Extension** | Right-click any text on any webpage to repair it |
 
 ---
 
@@ -47,7 +38,7 @@ Paste any claim, URL, or AI-generated text. Three specialized agents work in par
 ```
 User Input
     ↓
-Scout Agent (Tavily live web search)
+Scout Agent (Nimble + Tavily live web search)
     ↓
 Critic Agent (credibility scoring + contradiction detection)
     ↓
@@ -65,7 +56,8 @@ Tower Lakehouse (storage + Signal Watch scheduling)
 **Backend**
 - Python + FastAPI
 - Server-Sent Events (real-time streaming)
-- Tavily API (live web search)
+- Nimble API (live web intelligence)
+- Tavily API (fallback web search)
 - Groq (Llama 3.3 70B, Llama 3.1 8B, Gemma 2 9B)
 - Tower (serverless pipeline + lakehouse)
 
@@ -74,6 +66,11 @@ Tower Lakehouse (storage + Signal Watch scheduling)
 - Framer Motion (animations)
 - Canvas API (EKG meter + source graph)
 - Dark/light theme
+
+**Browser Extension**
+- Chrome Manifest V3
+- Context menu integration
+- Real-time verdict popup
 
 ---
 
@@ -89,6 +86,7 @@ Create `backend/.env`:
 ```
 GROQ_API_KEY=your_groq_key
 TAVILY_API_KEY=your_tavily_key
+NIMBLE_API_KEY=your_nimble_key
 ```
 
 ```bash
@@ -104,35 +102,40 @@ npm start
 
 Open http://localhost:3000
 
+### Browser Extension
+1. Open Chrome → `chrome://extensions/`
+2. Enable Developer mode
+3. Click Load unpacked → select `extension/` folder
+
 ---
 
 ## 📡 API
 
 ```bash
 # Repair a claim
-POST http://localhost:8080/repair
+POST https://signal-repair.onrender.com/repair
 {"input": "The Great Wall of China is visible from space", "mode": "claim"}
 
 # Analyze a URL
-POST http://localhost:8080/analyze/url
+POST https://signal-repair.onrender.com/analyze/url
 {"url": "https://example.com/article"}
 
 # Claim Battle
-POST http://localhost:8080/battle
+POST https://signal-repair.onrender.com/battle
 {"claim_a": "Coffee is good for you", "claim_b": "Coffee is bad for you"}
 
 # DNA of a Lie
-POST http://localhost:8080/dna
+POST https://signal-repair.onrender.com/dna
 {"claim": "Einstein failed math in school"}
 
 # Trend Radar
-GET http://localhost:8080/radar
+GET https://signal-repair.onrender.com/radar
 
 # Signal History
-GET http://localhost:8080/history
+GET https://signal-repair.onrender.com/history
 ```
 
-Full API docs: http://localhost:8080/docs
+Full API docs: https://signal-repair.onrender.com/docs
 
 ---
 
