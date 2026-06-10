@@ -11,7 +11,7 @@ Built for **DeveloperWeek New York 2026 Hackathon**
 - **App:** https://signal-repair.vercel.app
 - **API:** https://signal-repair.onrender.com/docs
 - **GitHub:** https://github.com/anshumanbahekar/signal-repair
-- **Demo Video:** https://www.youtube.com/watch?v=RFKflqrorMA
+- **Demo Video:** https://youtu.be/eRDTGDcGM0g
 
 > Note: Backend hosted on Render free tier — may take 30 seconds to wake up on first request.
 
